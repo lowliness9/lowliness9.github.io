@@ -1,0 +1,238 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>Frp代理工具使用 | lowliness9的博客</title>
+
+<link rel="shortcut icon" href="https://lowliness9.github.io/favicon.ico?v=1605289416172">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://lowliness9.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            lowliness9的博客
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/post/about" class="menu gt-a-link">
+                            关于
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1605289416172" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    Frp代理工具使用
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2020-05-01 ·
+                    </time>
+                    
+                        <a href="https://lowliness9.github.io/tag/wge7I2P4CM/" class="post-tags">
+                            # 内网穿透
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <h3 id="1frp简介">1.Frp简介</h3>
+<p>Frp是一个高性能的反向代理工具，可以简单快速的将你的内网服务映射到公网，实现内网穿透。类似的还有Ngrok、花生壳等工具。</p>
+<h3 id="2官方下载地址">2.官方下载地址</h3>
+<p><a href="https://github.com/fatedier/frp.git">frp下载</a> 根据对应的操作系统进行下载就可以，建议只从官网下载。</p>
+<figure data-type="image" tabindex="1"><img src="https://lowliness9.github.io/post-images/1600150646876.png" alt="" loading="lazy"></figure>
+<h3 id="3需要条件">3.需要条件</h3>
+<p>1个公网、1个域名(可选)</p>
+<h3 id="4内网穿透远程桌面服务">4.内网穿透远程桌面服务</h3>
+<ul>
+<li><strong>服务端设置</strong><br>
+下载frp_0.33.0_linux_amd64.tar.gz并解压，编辑服务端配置文件frps.ini，s代表server。<br>
+<strong>bind_port</strong> 默认绑定的端口是7000没有特殊需求不用更改<br>
+<strong>dashboard_user</strong> 控制面板用户名，默认admin<br>
+<strong>dashboard_pwd</strong> 控制面板密码，默认admin<br>
+<strong>dashboard_port</strong> 控制面板端口，默认7500，可以更换到高端口</li>
+</ul>
+<pre><code>[common]
+bind_port = 7000
+dashboard_user = admin
+dashboard_pwd = 1qaz2wsxcde3
+dashboard_port = 7500
+</code></pre>
+<p>在终端执行命令启动frp服务端</p>
+<pre><code>./frps -c frps.ini
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://lowliness9.github.io/post-images/1600154001931.png" alt="" loading="lazy"></figure>
+<ul>
+<li><strong>客户端设置</strong><br>
+下载frp_0.33.0_windows_amd64.zip并解压，编辑客户端配置文件frpc.ini，c代表client。<br>
+<strong>server_addr</strong> 服务端的IP必须是公网<br>
+<strong>server_port</strong> 服务端监听的端口，默认7000<br>
+<strong>type</strong> 大部分情况都是tcp<br>
+<strong>local_ip</strong> 需要转发的内网机子的ip，通常是127.0.0.1，如果多网卡注意看需要转发的端口绑定在那个网卡上<br>
+<strong>remote_port</strong> 将本地的端口转发到服务端的端口，连接成功后服务器将开启这个端口以便我们连接</li>
+</ul>
+<pre><code>[common]
+server_addr = xx.xx.xx.xx
+server_port = 7000
+
+[ssh]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 3389
+remote_port = 3389
+</code></pre>
+<p>在命令行中执行命令启动frp客户端</p>
+<pre><code> .\frpc.exe -c .\frpc.ini
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://lowliness9.github.io/post-images/1600154507748.png" alt="" loading="lazy"></figure>
+<p>转发成功服务端将会开启新的端口，同时也会有新的日志</p>
+<figure data-type="image" tabindex="4"><img src="https://lowliness9.github.io/post-images/1600154576165.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://lowliness9.github.io/post-images/1600154640117.png" alt="" loading="lazy"></figure>
+<p>本地进行远程连接<br>
+<img src="https://lowliness9.github.io/post-images/1600154704839.png" alt="" loading="lazy"></p>
+<h3 id="5最后">5.最后</h3>
+<p>以上是frp最简单的使用方法，其它更多用法还需要再研究。</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://lowliness9.github.io/post/CaIisXASt/" class="post-title gt-a-link">
+                    metasploit偏执模式
+                </a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">不忘初心</div>
+    <div class="social-container">
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-twitter gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-weibo gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-zhihu gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-dribbble gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-facebook gt-c-content-color-first"></i>
+                </a>
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://lowliness9.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
