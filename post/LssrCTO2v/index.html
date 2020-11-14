@@ -4,7 +4,7 @@
 <meta name="description" content=""/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<title>关于 | lowliness9的博客</title>
+<title>wayang-cms跨站脚本攻击 | lowliness9的博客</title>
 
 <link rel="shortcut icon" href="https://lowliness9.github.io/favicon.ico?v=1605328239264">
 
@@ -89,21 +89,53 @@
         <div class="post-detail gt-bg-theme-color-second">
             <article class="gt-post-content">
                 <h2 class="post-title">
-                    关于
+                    wayang-cms跨站脚本攻击
                 </h2>
                 <div class="post-info">
                     <time class="post-time gt-c-content-color-first">
-                        · 2018-09-10 ·
+                        · 2020-07-20 ·
                     </time>
+                    
+                        <a href="https://lowliness9.github.io/tag/N9c4F8SF6/" class="post-tags">
+                            # 代码审计
+                        </a>
                     
                 </div>
                 <div class="post-content">
-                    <p>主人很懒，这里是空的</p>
+                    <h3 id="1wayang-cms官方下载地址">1.wayang-cms官方下载地址</h3>
+<p>github官方下载，<a href="https://github.com/ketutd/wayang-cms">wayang-cms</a></p>
+<h3 id="2搭建复现环境">2.搭建复现环境</h3>
+<p>下载并安装phpStudy，下载wayang-cms并将里面所有文件全部复制到phpStudy的web目录，连接mysql并创建新的数据库wayang-cms，启动Apache访问 <code>http://127.0.0.1/wy_install/</code>进行安装设置，安装完成将wy_install中的cms.sql导入到数据库即可，成功运行如下：<br>
+<img src="https://lowliness9.github.io/post-images/1605325175633.png" alt="" loading="lazy"></p>
+<h3 id="3漏洞分析">3.漏洞分析</h3>
+<p>漏洞发生在index.php Line316<br>
+<img src="https://lowliness9.github.io/post-images/1605325310667.png" alt="" loading="lazy"><br>
+通过调试发现<code>$datamod['widget_module']</code>值为visitor，访问首页查看源码<br>
+<img src="https://lowliness9.github.io/post-images/1605325452724.png" alt="" loading="lazy"><br>
+<img src="https://lowliness9.github.io/post-images/1605325415653.png" alt="" loading="lazy"><br>
+在这里包含的文件为<code>wy_controlls/wy_side_visitor.php</code>，定位到<code>wy_controlls/wy_side_visitor.php</code> Line49，代码如下：<br>
+<img src="https://lowliness9.github.io/post-images/1605325530824.png" alt="" loading="lazy"><br>
+代码中直接从<code>$_SESSION['visitor']['visitorip']</code>里面取值，定位Line11。<br>
+<img src="https://lowliness9.github.io/post-images/1605325637644.png" alt="" loading="lazy"><br>
+<code>$_SESSION['visitor']</code>被赋值为一个数组，<code>$_SESSION['visitor']['visitorip']</code>为访客IP，其调用方法为ip(),定位到该方法，文件为<code>wy_get_ipaddress.php</code>。<br>
+<img src="https://lowliness9.github.io/post-images/1605325786777.png" alt="" loading="lazy"><br>
+此处可以通过<code>X-Forwarded-For</code>伪造来源IP，该方法未对数据进行任何处理直接返回，再赋值给<code>$_SESSION['visitor']</code>，最后直接输出，形成反射型XSS。<br>
+<code>PayLoad为：X-Forwarded-For: &lt;script&gt;alert('xss')&lt;/script&gt;</code></p>
+<h3 id="4验证">4.验证</h3>
+<p><img src="https://lowliness9.github.io/post-images/1605325944155.png" alt="" loading="lazy"><br>
+<img src="https://lowliness9.github.io/post-images/1605325868585.png" alt="" loading="lazy"></p>
 
                 </div>
             </article>
         </div>
 
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://lowliness9.github.io/post/wVLBEoQ6E/" class="post-title gt-a-link">
+                    wireshark常用过滤表达式
+                </a>
+            </div>
         
 
         
