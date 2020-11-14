@@ -1,0 +1,213 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>一次对外挂网站真实IP的溯源 | lowliness9的博客</title>
+
+<link rel="shortcut icon" href="https://lowliness9.github.io/favicon.ico?v=1605338817863">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://lowliness9.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            lowliness9的博客
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/post/about" class="menu gt-a-link">
+                            关于
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1605338817863" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    一次对外挂网站真实IP的溯源
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2020-11-14 ·
+                    </time>
+                    
+                        <a href="https://lowliness9.github.io/tag/G7ulOI_cJ/" class="post-tags">
+                            # 溯源分析
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <h3 id="事件背景">事件背景</h3>
+<p>一天晚上下班走在路上，突然收到老板的消息，说是有个外挂网站<code>example.com</code>需要溯源到真实IP地址，手机访问了一下发现首页就是让输入密码，当时刚下班一会，于是我抓紧时间冲进地铁回到家里准备开始&quot;愉快&quot;的加班生活。</p>
+<h3 id="分析过程">分析过程</h3>
+<ul>
+<li>多地ping<br>
+拿到网站后，我打开了ipip.net使用多地ping发现国内响应的IP地址多达20多个，经过一番调查发现在国内这个网站使用的某度的CDN。<br>
+<img src="https://lowliness9.github.io/post-images/1605333316446.png" alt="" loading="lazy"><br>
+想着这个网站可能在国外没有使用CDN，于是使用国外节点进行多地ping了一下，没想到这个网站在国外也使用了CDN，用的是cloudflare，对于cloudflare网上有个网站<a href="http://www.crimeflare.org:82/cfs.html"> Hiding behind CloudFlare </a>有机率可以找到真实IP地址，我根据教程查了一下没找到，后面确认了一下这些IP地址确实是cloudflare的CDN节点。<br>
+<img src="https://lowliness9.github.io/post-images/1605333686472.png" alt="" loading="lazy"><br>
+多地ping基本没找到太多有用的信息，于是我打算换个思路。</li>
+<li>dnsdb<br>
+经过了一波ping操作后，我发现这个网站在全球都使用了CDN不太好找到，我开始查该域名的历史解析IP地址，主要用的dnsdb这个用起来还不错数据比较全。查询后发现解析的A记录包括子域名有1800多个，崩溃了。但是我发现它这个网站和子域名都是解析到<code>19*.*.*.*</code>这个地址，感觉可能真实IP就在这个段，后面经过扫描端口、查询这些IP线索发现并不真实IP基本都是CDN节点，IP的反向解析的域名记录上万条被我就排除了。<img src="https://lowliness9.github.io/post-images/1605334030972.png" alt="" loading="lazy"></li>
+<li>网站着手<br>
+在尝试了常规方法没东西于是打开网站想从网站着手，如果能找到漏洞之类的说不定能突破，网站打开就需要登录输入密码，界面很简单就一个输入密码的框。<br>
+<img src="https://lowliness9.github.io/post-images/1605335872804.png" alt="" loading="lazy"><br>
+习惯性的右键查看源码发现了源码中存在两个外链，并且都能正常访问指向两个不同的网站，这里称它们为<code>aa.com</code>、<code>bb.com</code>吧。<br>
+<img src="https://lowliness9.github.io/post-images/1605334859085.png" alt="" loading="lazy"><br>
+<code>aa.com</code>、<code>bb.com</code>两个网站并没有密码在首页有说明默认密码是<code>*****</code>，于是我用这个密码登录了<code>example.com</code>成功登录，登录进去也有一样提示的默认密码，我基本确定了这几个网站都是同一个人的。<br>
+<img src="https://lowliness9.github.io/post-images/1605336308752.png" alt="" loading="lazy"><br>
+<code>aa.com</code>、<code>bb.com</code>被我确认是没有CDN的，直接就是真实IP地址，当时用<code>aa.com</code>、<code>bb.com</code>解析出来的IP地址绑定<code>example.com</code>发现不能正常访问，到现在还是没找到<code>example.com</code>的真实地址。于是我登录进去，想找找有没漏洞发邮件的功能，无果。在抓包的时候我发现网站请求数据向子域<code>aa.example.com</code>发送请求，除了子域名之外还一直向另一个网站<code>cc.com</code>发送请求，并且请求的资源地址都是固定的。<br>
+<img src="https://lowliness9.github.io/post-images/1605336551266.png" alt="" loading="lazy"><br>
+我研究了一下两个网站，结果是<code>aa.example.com</code>有CDN，<code>cc.com</code>和前面两个一样没有CDN。到现在基本确定这些网站都和主站相关，<code>aa.com</code>、<code>bb.com</code>、<code>cc.com</code>都没有被CDN保护相当于有3个真实IP地址了。我将子域名<code>aa.example.com</code>与找到IP地址一一绑定访问，发现与<code>cc.com</code>的IP地址绑定后依然可以正常访问，基本确定子域名<code>aa.example.com</code>和<code>cc.com</code>在同一服务器上，但是主站还是无法确定，到现在为止有<code>aa.com</code>、<code>bb.com</code>、<code>cc.com</code>、<code>aa.example.com</code>地址都确定了。</li>
+<li>最后的挣扎<br>
+经过前面的挣扎有点累点根烟休息一下，休息完继续开心的加班。前面在dnsdb查询历史解析记录的时候数据太多只是大概排除了就没继续了，我还是想从子域名继续着手一下。想到万能的佛法于是登录网站手上正好有高级会员账号，哈哈。想查下这个有多少子域名，还好一共204条记录还都是今年的，看来他一直都在换域名。<br>
+<img src="https://lowliness9.github.io/post-images/1605337430934.png" alt="" loading="lazy"><br>
+查询出来之后观察到响应头中的Server字段都是<code>yunjiasu-nginx</code>，看来这个站CDN配置的还是比较全面，当时突然想起佛法可以匹配header于是我把<code>yunjiasu-nginx</code>给排除了，没想到果然还是有漏网之鱼，排除之后204个关联子域名只剩下这最后一个叫它<code>ff.example.com</code>吧，解析地址<code>12.*.*.*</code>，而且响应的Server是<code>Microsoft-IIS/7.5</code>，和主站开发语言一样。<br>
+<img src="https://lowliness9.github.io/post-images/1605337854832.png" alt="" loading="lazy"><br>
+对<code>ff.example.com</code>使用全球ping发现均解析到<code>12.*.*.*</code>，看来这个站没使用CDN心里窃喜。我将主站与<code>12.*.*.*</code>绑定，清空dns缓存访问直接成功了，特意抓了数据包确认了IP地址能正常访问。</li>
+</ul>
+<h3 id="分析结果">分析结果</h3>
+<p>目标<code>example.com</code>、<code>aa.example.com</code>、<code>ff.example.com</code>、<code>aa.com</code>、<code>bb.com</code>、<code>cc.com</code>的真实IP地址，将整个过程编写成报告交差。</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://lowliness9.github.io/post/TpDl59sBU/" class="post-title gt-a-link">
+                    溯源分析思路
+                </a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">不忘初心</div>
+    <div class="social-container">
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-twitter gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-weibo gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-zhihu gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-dribbble gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://lowliness9.github.io/" target="_blank">
+                    <i class="fab fa-facebook gt-c-content-color-first"></i>
+                </a>
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://lowliness9.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
