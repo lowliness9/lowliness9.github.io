@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lowliness9.github.io</id>
     <title>lowliness9的博客</title>
-    <updated>2020-11-14T12:28:45.046Z</updated>
+    <updated>2020-11-14T13:00:47.321Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lowliness9.github.io"/>
     <link rel="self" href="https://lowliness9.github.io/atom.xml"/>
@@ -60,24 +60,17 @@
         <updated>2020-03-03T03:53:41.000Z</updated>
     </entry>
     <entry>
+        <title type="html"><![CDATA[wayang-cms Cross-site scripting vulnerability]]></title>
+        <id>https://lowliness9.github.io/post/iDACsrRWO/</id>
+        <link href="https://lowliness9.github.io/post/iDACsrRWO/">
+        </link>
+        <updated>2019-01-03T12:30:25.000Z</updated>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[wayang-cms SQL injection vulnerability]]></title>
         <id>https://lowliness9.github.io/post/Ma16ZrNDN/</id>
         <link href="https://lowliness9.github.io/post/Ma16ZrNDN/">
         </link>
         <updated>2019-01-03T12:15:08.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[wayang-cms SQL注入漏洞]]></title>
-        <id>https://lowliness9.github.io/post/GfCcOU7hX/</id>
-        <link href="https://lowliness9.github.io/post/GfCcOU7hX/">
-        </link>
-        <updated>2019-01-02T10:54:34.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[wayang-cms 跨站脚本攻击]]></title>
-        <id>https://lowliness9.github.io/post/LssrCTO2v/</id>
-        <link href="https://lowliness9.github.io/post/LssrCTO2v/">
-        </link>
-        <updated>2019-01-02T03:28:29.000Z</updated>
     </entry>
 </feed>

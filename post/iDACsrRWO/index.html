@@ -4,7 +4,7 @@
 <meta name="description" content=""/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<title>metasploit从入门到精通 | lowliness9的博客</title>
+<title>wayang-cms Cross-site scripting vulnerability | lowliness9的博客</title>
 
 <link rel="shortcut icon" href="https://lowliness9.github.io/favicon.ico?v=1605358724795">
 
@@ -89,21 +89,41 @@
         <div class="post-detail gt-bg-theme-color-second">
             <article class="gt-post-content">
                 <h2 class="post-title">
-                    metasploit从入门到精通
+                    wayang-cms Cross-site scripting vulnerability
                 </h2>
                 <div class="post-info">
                     <time class="post-time gt-c-content-color-first">
-                        · 2020-03-03 ·
+                        · 2019-01-03 ·
                     </time>
                     
-                        <a href="https://lowliness9.github.io/tag/eCLY9oJE-6/" class="post-tags">
-                            # metasploit
+                        <a href="https://lowliness9.github.io/tag/N9c4F8SF6/" class="post-tags">
+                            # 代码审计
                         </a>
                     
                 </div>
                 <div class="post-content">
-                    <h3 id="待续">待续</h3>
-<figure data-type="image" tabindex="1"><img src="https://lowliness9.github.io/post-images/1599969288209.jpg" alt="" loading="lazy"></figure>
+                    <h3 id="1wayang-cms-official-download-address">1.wayang-cms official download address</h3>
+<p>Github official download，<a href="https://github.com/ketutd/wayang-cms">wayang-cms</a></p>
+<h3 id="2build-a-recurring-environment">2.Build a recurring environment</h3>
+<p>Download and install phpStudy, download wayang-cms and copy all files inside to phpStudy's web directory, connect to mysql and create a new database wayang-cms, start Apache to access <code>http://127.0.0.1/wy_install/</code> set up installation. After the installation is complete, import cms.sql in wy_install into the database, and the successful operation is as follows<br>
+<img src="https://lowliness9.github.io/post-images/1605356351107.png" alt="" loading="lazy"></p>
+<h3 id="3vulnerability-analysis">3.Vulnerability analysis</h3>
+<p>The vulnerability occurs on line 316 of index.php<br>
+<img src="https://lowliness9.github.io/post-images/1605325310667.png" alt="" loading="lazy"><br>
+Through debugging, it is found that <code>$datamod['widget_module']</code> value is visitor, visit the homepage to view the source code<br>
+<img src="https://lowliness9.github.io/post-images/1605325452724.png" alt="" loading="lazy"><br>
+<img src="https://lowliness9.github.io/post-images/1605325415653.png" alt="" loading="lazy"><br>
+The file included here is <code>wy_controlls/wy_side_visitor.php</code>, locate the line 49 of <code>wy_controlls/wy_side_visitor.php</code>, the code is as follows:<br>
+<img src="https://lowliness9.github.io/post-images/1605325530824.png" alt="" loading="lazy"><br>
+The code directly takes the value from <code>$_SESSION['visitor']['visitorip']</code> and locates it to the 11th line.<br>
+<img src="https://lowliness9.github.io/post-images/1605325637644.png" alt="" loading="lazy"><br>
+<code>$_SESSION['visitor']</code> is assigned as an array, <code>$_SESSION['visitor']['visitorip']</code> is the visitor IP, its calling method is ip(), locate this method, the file is <code>wy_get_ipaddress .php</code>.<br>
+<img src="https://lowliness9.github.io/post-images/1605325786777.png" alt="" loading="lazy"><br>
+Here, the source IP can be forged by <code>X-Forwarded-For</code>, this method returns directly without any processing of the data, and then assigns it to <code>$_SESSION['visitor']</code>, and finally outputs directly to form a reflective XSS.<br>
+PayLoad: <code>X-Forwarded-For: &lt;script&gt;alert('xss')&lt;/script&gt;</code></p>
+<h3 id="4vulnerability-proof">4.Vulnerability proof</h3>
+<p><img src="https://lowliness9.github.io/post-images/1605325944155.png" alt="" loading="lazy"><br>
+<img src="https://lowliness9.github.io/post-images/1605325868585.png" alt="" loading="lazy"></p>
 
                 </div>
             </article>
@@ -112,8 +132,8 @@
         
             <div class="next-post">
                 <div class="next gt-c-content-color-first">下一篇</div>
-                <a href="https://lowliness9.github.io/post/iDACsrRWO/" class="post-title gt-a-link">
-                    wayang-cms Cross-site scripting vulnerability
+                <a href="https://lowliness9.github.io/post/Ma16ZrNDN/" class="post-title gt-a-link">
+                    wayang-cms SQL injection vulnerability
                 </a>
             </div>
         
